@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<faces-config
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+    version="1.2">
+    <managed-bean>
+        <managed-bean-name>loginBean</managed-bean-name>
+        <managed-bean-class>
+            pl.edu.agh.student.pacyno.magic.beans.LoginBean
+        </managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>myCardsBean</managed-bean-name>
+        <managed-bean-class>
+            pl.edu.agh.student.pacyno.magic.beans.MyCardsBean
+        </managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>addCardBean</managed-bean-name>
+        <managed-bean-class>
+            pl.edu.agh.student.pacyno.magic.beans.AddCardBean
+        </managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>detailsBean</managed-bean-name>
+        <managed-bean-class>
+            pl.edu.agh.student.pacyno.magic.beans.DetailsBean
+        </managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>searchBean</managed-bean-name>
+        <managed-bean-class>
+            pl.edu.agh.student.pacyno.magic.beans.SearchBean
+        </managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    
+    <navigation-rule>
+        <display-name>Login</display-name>
+        <from-view-id>/login.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>MyCards</from-outcome>
+            <to-view-id>/mycards.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <display-name>MyCards</display-name>
+        <from-view-id>/mycards.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>Login</from-outcome>
+            <to-view-id>/login.jsp</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>AddCard</from-outcome>
+            <to-view-id>/addcard.jsp</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>Details</from-outcome>
+            <to-view-id>/details.jsp</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>Search</from-outcome>
+            <to-view-id>/search.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <display-name>AddCard</display-name>
+        <from-view-id>/addcard.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>MyCards</from-outcome>
+            <to-view-id>/mycards.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <display-name>Details</display-name>
+        <from-view-id>/details.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>MyCards</from-outcome>
+            <to-view-id>/mycards.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <display-name>Search</display-name>
+        <from-view-id>/search.jsp</from-view-id>
+        <navigation-case>
+            <from-outcome>MyCards</from-outcome>
+            <to-view-id>/mycards.jsp</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+</faces-config>
