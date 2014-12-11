@@ -8,40 +8,17 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 <title>Log in!</title>
-<script src="https://apis.google.com/js/client:platform.js" async defer></script>
 </head>
 <body>
-<script>
-	function signinCallback(authResult) {
-	  if (authResult['status']['signed_in']) {
-	    // Update the app to reflect a signed in user
-	    // Hide the sign-in button now that the user is authorized, for example:
-	    document.getElementById('signinButton').setAttribute('style', 'display: none');
-	  } else {
-	    // Update the app to reflect a signed out user
-	    // Possible error values:
-	    //   "user_signed_out" - User is signed-out
-	    //   "access_denied" - User denied access to your app
-	    //   "immediate_failed" - Could not automatically log in the user
-	    console.log('Sign-in state: ' + authResult['error']);
-	  }
-	}
-
-</script>
 <f:view>
 	<h:form>
+		<h:panelGrid columns="2">
 			<h:outputText id="nicknameLabel" value="Login"></h:outputText>
 			<h:inputText id="nicknameInput" value="#{loginBean.nickname}" label="nicknameLabel"></h:inputText>
-			<h:commandButton id="loginButton" action="#{loginBean.login}" value="Login"></h:commandButton>
-			<span id="signinButton">
-  				<span
-    				class="g-signin"
-    				data-callback="signinCallback"
-    				data-clientid="771245024748-8fmjif6q7f8fkcftnnqbuq428389pkl0.apps.googleusercontent.com"
-    				data-cookiepolicy="single_host_origin"
-    				data-scope="profile">
-  				</span>
-			</span>
+			<h:outputText id="passwordLabel" value="Password"></h:outputText>
+			<h:inputSecret id="passwordInput" value="#{loginBean.password}" label="passwordLabel"></h:inputSecret>
+		</h:panelGrid>
+		<h:commandButton id="loginButton" action="#{loginBean.login}" value="Login"></h:commandButton>
 			
 	</h:form>
 </f:view>

@@ -1,0 +1,13 @@
+<Context>
+	<Resource name="jdbc/MySQLDS"
+      global="jdbc/MySQLDS"
+      auth="Container"
+      type="javax.sql.DataSource"
+      driverClassName="org.apache.derby.jdbc.ClientDriver"
+      url="jdbc:derby://localhost:1527/magicdb"
+       
+      maxActive="100"
+      maxIdle="20"
+      minIdle="5"
+      maxWait="10000"/>
+</Context>

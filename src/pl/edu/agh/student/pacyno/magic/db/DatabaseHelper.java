@@ -12,24 +12,32 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
 public class DatabaseHelper {
 	private static String dbURL = "jdbc:derby://localhost:1527/magicdb";
 	private static Connection conn = null;
 	
 	static void init(){
 		try{
-			Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
-			conn = DriverManager.getConnection(dbURL);
-		} catch(SQLException e){
+			//Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
+			//conn = DriverManager.getConnection(dbURL);
+			
+			Context context = new InitialContext();
+            DataSource ds = (DataSource) context.lookup("java:/comp/env/jdbc/MySQLDS");
+            conn = ds.getConnection();
+		/*} catch(SQLException e){
 			e.printStackTrace();
 		} catch(ClassNotFoundException e){
-			e.printStackTrace();
+			e.printStackTrace();*/
 		} catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 	
-	public static List<CardData> getCardData(int id){
+	public static List<CardData> getCardData(String id){
 		if(conn == null)
 			init();
 		
@@ -41,7 +49,7 @@ public class DatabaseHelper {
 		
 		try{
 			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setInt(1, id);
+			statement.setString(1, id);
 			ResultSet set = statement.executeQuery();
 			
 			if(set.next()){
@@ -101,7 +109,7 @@ public class DatabaseHelper {
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setString(1, "%" + pattern + "%");
 			statement.setString(2, "%" + pattern + "%");
-			statement.setInt(3, LoginBean.getId());
+			statement.setString(3, LoginBean.getId());
 			ResultSet set = statement.executeQuery();
 			
 			if(set.next()){
@@ -139,7 +147,7 @@ public class DatabaseHelper {
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setInt(1, value);
 			statement.setInt(2, index);
-			statement.setInt(3, LoginBean.getId());
+			statement.setString(3, LoginBean.getId());
 			statement.executeUpdate();
 		} catch(SQLException e){
 			e.printStackTrace();
@@ -164,7 +172,7 @@ public class DatabaseHelper {
 		try{
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setInt(1, index);
-			statement.setInt(2, LoginBean.getId());
+			statement.setString(2, LoginBean.getId());
 			ResultSet set = statement.executeQuery();
 			
 			if(set.next())
@@ -187,7 +195,7 @@ public class DatabaseHelper {
 		try{
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setInt(1, index);
-			statement.setInt(2, LoginBean.getId());
+			statement.setString(2, LoginBean.getId());
 			statement.executeUpdate();
 			
 		} catch(SQLException e){
@@ -202,7 +210,7 @@ public class DatabaseHelper {
 		String sql = "insert into card_data values (?, ?, FALSE, ?, ?, ?)";
 		try{
 			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setInt(1, LoginBean.getId());
+			statement.setString(1, LoginBean.getId());
 			statement.setInt(2, cardId);
 			statement.setString(3, additionalInfo);
 			statement.setInt(4, amount);
@@ -222,7 +230,9 @@ public class DatabaseHelper {
 			init();
 		
 		List<PublicCardData> result = null;
-		String sql = "select * from card_data "+
+		String sql = "select user_id, name, set_id, card_id, "+
+				"foil, additional_info, amount, amount_public "+
+				"from card_data "+
 				"join card on card_data.card_id = card.id "+
 				"join user_data on card_data.user_id = user_data.user_id "+
 				"where card_data.user_id = ? and card_data.amount_public > 0 and card.set_id like ?";
@@ -236,9 +246,9 @@ public class DatabaseHelper {
 			if(set.next()){
 				result = new ArrayList<PublicCardData>();
 				do{
-					Card card = new Card(set.getInt(2), set.getString(8));
-					User user = new User(set.getInt(1), set.getString(11));
-					int amount = set.getInt(6);
+					Card card = new Card(set.getInt(4), set.getString(2));
+					User user = new User(set.getString(1));
+					int amount = set.getInt(8);
 					
 					result.add(new PublicCardData(card, user, amount));
 					
@@ -257,9 +267,10 @@ public class DatabaseHelper {
 		
 		List<PublicCardData> result = null;
 		
-		String sql = "select * from card_data "+
+		String sql = "select user_id, name, set_id, card_id, "+
+				"foil, additional_info, amount, amount_public "+
+				"from card_data "+
 				"join card on card_data.card_id = card.id "+
-				"join user_data on card_data.user_id = user_data.user_id "+
 				"where card.name like ? and card_data.amount_public > 0";
 		
 		try{
@@ -270,9 +281,9 @@ public class DatabaseHelper {
 			if(set.next()){
 				result = new ArrayList<PublicCardData>();
 				do{
-					Card card = new Card(set.getInt(2), set.getString(8));
-					User user = new User(set.getInt(1), set.getString(11));
-					int amount = set.getInt(6);
+					Card card = new Card(set.getInt(4), set.getString(2));
+					User user = new User(set.getString(1));
+					int amount = set.getInt(8);
 					
 					result.add(new PublicCardData(card, user, amount));
 					
@@ -284,5 +295,29 @@ public class DatabaseHelper {
 		}
 		
 		return result;
+	}
+	
+	//draft solution
+	public static String getUserPassword(){
+		if(conn == null)
+			init();
+		
+		String sql = "select password from users where username = ? and enabled";
+		
+		try{
+		PreparedStatement statement = conn.prepareStatement(sql);
+		statement.setString(1, LoginBean.getId());
+		ResultSet set = statement.executeQuery();
+		
+		if(set.next())
+			return set.getString(1);
+		
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+		
+		
+		
+		return null;
 	}
 }
